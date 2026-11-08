@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "kagi-search",
+  "name": "Kagi for Omarchy",
+  "version": "0.1.0",
+  "author": "9538-7874 Quebec Inc.",
+  "license": "MIT",
+  "description": "Search Kagi and summarize a clipboard URL from Omarchy, using your browser login and no API key.",
+  "kinds": ["service"],
+  "entryPoints": {
+    "service": "Service.qml"
+  }
+}

@@ -1,0 +1,60 @@
+#!/bin/bash
+# Search Kagi, or summarize a clipboard URL, from Omarchy.
+set -euo pipefail
+
+icon_kagi=$(printf '\U000f0a43')
+
+trim() {
+  local s=$1
+  s=${s#"${s%%[![:space:]]*}"}
+  s=${s%"${s##*[![:space:]]}"}
+  printf '%s' "$s"
+}
+
+search_url() {
+  printf 'https://kagi.com/search?q=%s\n' "$(jq -rn --arg v "$1" '$v|@uri')"
+}
+
+summarizer_url() {
+  printf 'https://kagi.com/summarizer/index.html?url=%s\n' "$(jq -rn --arg v "$1" '$v|@uri')"
+}
+
+search() {
+  local query
+  # Enter on an empty field prints a blank line and exits 0. Escape exits 1.
+  query=$(omarchy-menu-input "Kagi") || return 0
+  query=$(trim "$query")
+  [[ -n $query ]] || return 0
+  omarchy-launch-browser "$(search_url "$query")"
+}
+
+summarize() {
+  local clip
+  clip=$(wl-paste --no-newline --type text 2>/dev/null) || clip=""
+  clip=$(trim "$clip")
+  if [[ $clip =~ ^https?://[^[:space:]]+$ ]]; then
+    omarchy-launch-browser "$(summarizer_url "$clip")"
+  else
+    omarchy-notification-send -g "$icon_kagi" "Kagi" "Clipboard has no URL to summarize"
+  fi
+}
+
+usage() {
+  cat <<'EOF'
+Usage: kagi search|summarize
+       kagi -h|--help
+EOF
+}
+
+main() {
+  case ${1:-} in
+    search) search ;;
+    summarize) summarize ;;
+    -h | --help) usage ;;
+    *) usage >&2; exit 2 ;;
+  esac
+}
+
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+  main "$@"
+fi

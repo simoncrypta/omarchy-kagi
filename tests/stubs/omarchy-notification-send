@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+stub_dir=$(dirname "${BASH_SOURCE[0]}")
+# shellcheck disable=SC1091
+source "$stub_dir/log.sh"
+log_call "$@"
