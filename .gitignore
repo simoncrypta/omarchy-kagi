@@ -1,0 +1,16 @@
+# Agent and issue-tracker files stay local; they are not part of the plugin.
+AGENTS.md
+CLAUDE.md
+.agents/
+.claude/
+.codex/
+.cursor/
+.beads/
+.beads.gate.lock
+docs/exploration.md
+
+# Beads / Dolt
+.dolt/
+*.db
+.beads-credential-key
+*.gate.lock*
